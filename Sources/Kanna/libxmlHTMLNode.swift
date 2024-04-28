@@ -95,13 +95,21 @@ final class libxmlHTMLNode: XMLElement {
         }
     }
 
-    var nextSibling: XMLElement? {
+    var nextElementSibling: XMLElement? {
         node(from: xmlNextElementSibling(nodePtr))
     }
 
-    var previousSibling: XMLElement? {
+    var previousElementSibling: XMLElement? {
         node(from: xmlPreviousElementSibling(nodePtr))
     }
+
+	var nextSibling: (any XMLElement)? {
+		node(from: nodePtr.pointee.next)
+	}
+
+	var previousSibling: (any XMLElement)? {
+		node(from: nodePtr.pointee.prev)
+	}
 
 	var children: [XMLElement] {
 		var result: [XMLElement] = []

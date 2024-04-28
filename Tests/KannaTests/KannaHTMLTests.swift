@@ -142,13 +142,13 @@ class KannaHTMLTests: XCTestCase {
             return
         }
 
-        guard let next = node.nextSibling else {
+        guard let next = node.nextElementSibling else {
             XCTFail("Next sibling not found")
             return
         }
         XCTAssert(next.text == "third")
 
-        guard let previous = node.previousSibling else {
+        guard let previous = node.previousElementSibling else {
             XCTFail("Previous sibling not found")
             return
         }
