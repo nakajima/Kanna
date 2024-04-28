@@ -103,6 +103,28 @@ final class libxmlHTMLNode: XMLElement {
         node(from: xmlPreviousElementSibling(nodePtr))
     }
 
+	var children: [XMLElement] {
+		var result: [XMLElement] = []
+		if let child = nodePtr.pointee.children {
+			var childNode: XMLElement = libxmlHTMLNode(
+				document: doc,
+				docPtr: docPtr,
+				node: child
+			)
+
+			result.append(childNode)
+
+			while let nextChild = childNode.nextSibling {
+				result.append(nextChild)
+				childNode = nextChild
+			}
+
+			return result
+		} else {
+			return []
+		}
+	}
+
     private weak var weakDocument: XMLDocument?
     private var document: XMLDocument?
     private var docPtr: htmlDocPtr

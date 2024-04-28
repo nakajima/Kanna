@@ -8,7 +8,7 @@
 import XCTest
 import Foundation
 import CoreFoundation
-@testable import Kanna
+import Kanna
 
 class KannaTutorialsTests: XCTestCase {
     func testParsingFromString() {
@@ -246,6 +246,21 @@ class KannaTutorialsTests: XCTestCase {
 
 		XCTAssertEqual(2, div.css("p").count)
 		XCTAssertEqual("added!", Array(div.css("p")).last?.text)
+	}
+
+	func testChildren() throws {
+		let html = """
+		<body>
+			<div>hello <p>world</p></div>
+		</body>
+		"""
+
+		let document = try HTML(html: html, encoding: .utf8)
+		let div = document.at_css("div")!
+
+		XCTAssertEqual(2, div.children.count)
+		XCTAssertEqual("hello ", div.children[0].text)
+		XCTAssertEqual("world", div.children[1].text)
 	}
 }
 
