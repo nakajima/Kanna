@@ -208,6 +208,25 @@ class KannaTutorialsTests: XCTestCase {
 			let h2 = document.at_css("h2")!
 			XCTAssertEqual(["class": "show-title", "data-hello": "world"], h2.attributes)
 		}
+
+	func testReplaceElement() throws {
+		let html = """
+		<body>
+			<h2 class="show-title" data-hello="world">Three's Company</h2>
+		</body>
+		"""
+
+		let document = try HTML(html: html, encoding: .utf8)
+		let h2 = document.at_css("h2")!
+
+		let replacement = document.create(node: "p", content: "replaced!")!
+		h2.replace(with: replacement)
+
+		XCTAssertEqual(0, document.css("h2").count)
+
+		let p = try XCTUnwrap(document.at_css("p"))
+		XCTAssertEqual(p.text, "replaced!")
+	}
 }
 
 extension KannaTutorialsTests {

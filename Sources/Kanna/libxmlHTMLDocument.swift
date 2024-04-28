@@ -229,6 +229,20 @@ final class libxmlHTMLDocument: HTMLDocument {
         guard let docPtr = docPtr else { return .none }
         return XPath(doc: self, docPtr: docPtr).css(selector, namespaces: namespaces)
     }
+
+	func create(node: String, content: String?) -> (any XMLElement)? {
+		guard let docPtr else { return nil }
+
+		guard let xmlNode = xmlNewNode(nil, node) else {
+			print("no xml node")
+			return nil
+		}
+
+		let node = libxmlHTMLNode(document: self, docPtr: docPtr, node: xmlNode)
+		node.content = content
+
+		return node
+	}
 }
 
 /*
