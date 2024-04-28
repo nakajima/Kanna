@@ -250,7 +250,10 @@ final class libxmlHTMLNode: XMLElement {
 			return
 		}
 
+		let oldPtr = nodePtr
 		xmlReplaceNode(nodePtr, node.nodePtr)
+		nodePtr = node.nodePtr
+		xmlFreeNode(oldPtr)
 	}
 
     private func node(from ptr: xmlNodePtr?) -> XMLElement? {

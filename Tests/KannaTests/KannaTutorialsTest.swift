@@ -224,8 +224,12 @@ class KannaTutorialsTests: XCTestCase {
 
 		XCTAssertEqual(0, document.css("h2").count)
 
+		// Make sure it's swapped in the doc
 		let p = try XCTUnwrap(document.at_css("p"))
-		XCTAssertEqual(p.text, "replaced!")
+		XCTAssertEqual("replaced!", p.text)
+
+		// Make sure the element itself is swapped
+		XCTAssertEqual("p", h2.tagName)
 	}
 
 	func testAddChild() throws {
