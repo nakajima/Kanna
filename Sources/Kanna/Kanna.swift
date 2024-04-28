@@ -162,7 +162,7 @@ public protocol SearchableNode: Searchable {
 /**
 XMLElement
 */
-public protocol XMLElement: SearchableNode {
+public protocol XMLElement: AnyObject, SearchableNode {
     var parent: XMLElement? { get set }
     var attributes: [String: String?] { get }
     subscript(attr: String) -> String? { get set }

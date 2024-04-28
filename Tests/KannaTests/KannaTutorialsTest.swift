@@ -231,7 +231,7 @@ class KannaTutorialsTests: XCTestCase {
 	func testAddChild() throws {
 		let html = """
 		<body>
-			<div>Hello</div>
+			<div><p>Hello</p></div>
 		</body>
 		"""
 
@@ -244,8 +244,8 @@ class KannaTutorialsTests: XCTestCase {
 
 		div.addChild(p)
 
-		XCTAssertEqual(1, div.css("p").count)
-		XCTAssertEqual("added!", div.at_css("p")?.text)
+		XCTAssertEqual(2, div.css("p").count)
+		XCTAssertEqual("added!", Array(div.css("p")).last?.text)
 	}
 }
 
