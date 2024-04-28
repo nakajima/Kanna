@@ -227,6 +227,26 @@ class KannaTutorialsTests: XCTestCase {
 		let p = try XCTUnwrap(document.at_css("p"))
 		XCTAssertEqual(p.text, "replaced!")
 	}
+
+	func testAddChild() throws {
+		let html = """
+		<body>
+			<div>Hello</div>
+		</body>
+		"""
+
+		let document = try HTML(html: html, encoding: .utf8)
+		let div = document.at_css("div")!
+
+		let p = try XCTUnwrap(
+			document.create(node: "p", content: "added!")
+		)
+
+		div.addChild(p)
+
+		XCTAssertEqual(1, div.css("p").count)
+		XCTAssertEqual("added!", div.at_css("p")?.text)
+	}
 }
 
 extension KannaTutorialsTests {
