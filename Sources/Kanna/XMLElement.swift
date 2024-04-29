@@ -95,6 +95,14 @@ public final class XMLElement: Searchable {
 		}
 	}
 
+	public var firstElementChild: XMLElement? {
+		node(from: xmlFirstElementChild(nodePtr))
+	}
+
+	public var lastElementChild: XMLElement? {
+		node(from: xmlLastElementChild(nodePtr))
+	}
+
 	public var nextElementSibling: XMLElement? {
 		node(from: xmlNextElementSibling(nodePtr))
 	}
