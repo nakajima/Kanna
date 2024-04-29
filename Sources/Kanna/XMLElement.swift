@@ -86,7 +86,7 @@ public final class XMLElement: Searchable {
 
 	public var parent: XMLElement? {
 		get {
-			guard let doc else { return nil }
+			guard let doc = self.document else { return nil }
 			return XMLElement(document: doc, docPtr: docPtr, node: nodePtr.pointee.parent)
 		}
 		set {
