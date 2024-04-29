@@ -143,7 +143,7 @@ public final class HTMLDocument: SearchableNode, XMLDocument {
 	private var docPtr: htmlDocPtr?
 	private var rootNode: XMLElement?
 	private var html: String
-	private var url: String?
+	public var url: String?
 	private var encoding: String.Encoding
 
 	public var text: String? { rootNode?.text }
