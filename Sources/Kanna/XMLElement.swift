@@ -86,8 +86,15 @@ public final class XMLElement: Searchable {
 
 	public var parent: XMLElement? {
 		get {
-			guard let doc = self.document else { return nil }
-			return XMLElement(document: doc, docPtr: docPtr, node: nodePtr.pointee.parent)
+			let parent = withUnsafeMutablePointer(to: &nodePtr.pointee) {
+				$0.pointee.parent
+			}
+
+			guard let parent else {
+				return nil
+			}
+
+			return XMLElement(document: doc, docPtr: docPtr, node: UnsafeMutablePointer(parent))
 		}
 		set {
 			if let node = newValue {

@@ -282,6 +282,27 @@ class KannaTutorialsTests: XCTestCase {
 		XCTAssertEqual(first, second)
 		XCTAssertNotEqual(second, third)
 	}
+
+	func testTraverseUp() throws {
+		let document = try HTML(html: """
+		<div>
+			<p>
+				<strong>
+					Hi
+				</strong>
+			</p>
+		</div>
+		""", encoding: .utf8)
+
+		var node = document.at_css("strong")!
+		var i = 0
+		while let parent = node.parent {
+			i += 1
+			node = parent
+		}
+
+		XCTAssertEqual(5, i) // strong -> p -> div -> body -> html
+	}
 }
 
 extension KannaTutorialsTests {
