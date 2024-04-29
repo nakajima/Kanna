@@ -303,6 +303,22 @@ class KannaTutorialsTests: XCTestCase {
 
 		XCTAssertEqual(5, i) // strong -> p -> div -> body -> html
 	}
+
+	func testSetInnerHTML() throws {
+		let document = try HTML(html: """
+		<div>
+			<p>
+				<strong>
+					Hi
+				</strong>
+			</p>
+		</div>
+		""", encoding: .utf8)
+
+		document.body!.innerHTML = "<p>different</p>"
+
+		XCTAssertEqual(document.body!.toHTML, "<body><p>different</p></body>")
+	}
 }
 
 extension KannaTutorialsTests {

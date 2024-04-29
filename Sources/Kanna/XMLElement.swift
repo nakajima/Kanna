@@ -50,10 +50,35 @@ public final class XMLElement: Searchable {
 	}
 
 	public var innerHTML: String? {
-		guard let html = toHTML else { return nil }
-		return html
-			.replacingOccurrences(of: "</[^>]*>$", with: "", options: .regularExpression, range: nil)
-			.replacingOccurrences(of: "^<[^>]*>", with: "", options: .regularExpression, range: nil)
+		get {
+			guard let html = toHTML else { return nil }
+			return html
+				.replacingOccurrences(of: "</[^>]*>$", with: "", options: .regularExpression, range: nil)
+				.replacingOccurrences(of: "^<[^>]*>", with: "", options: .regularExpression, range: nil)
+		}
+
+		set {
+			guard let newValue else { return }
+
+			let option: Libxml2XMLParserOptions = [.RECOVER, .NOERROR, .NOWARNING]
+			let cur = newValue.cString(using: .utf8)!
+			let ptr = cur.withUnsafeBytes {
+				let doc = xmlReadMemory($0.bindMemory(to: xmlChar.self).baseAddress!, Int32($0.count), nil, String.Encoding.utf8.IANACharSetName, Int32(option.rawValue))
+				return unsafeBitCast(doc, to: (UnsafeMutablePointer<xmlNode>?).self)
+			}
+
+			guard let ptr, let newChildren = node(from: ptr) else {
+				return
+			}
+
+			for child in children {
+				removeChild(child)
+			}
+
+			for newChild in newChildren.children {
+				addChild(newChild)
+			}
+		}
 	}
 
 	public var className: String? {
