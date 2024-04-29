@@ -132,6 +132,10 @@ public final class XMLElement: Searchable {
 		node(from: xmlFirstElementChild(nodePtr))
 	}
 
+	public var firstChild: XMLElement? {
+		node(from: nodePtr.pointee.children)
+	}
+
 	public var lastElementChild: XMLElement? {
 		node(from: xmlLastElementChild(nodePtr))
 	}
