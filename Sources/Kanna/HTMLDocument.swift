@@ -232,7 +232,7 @@ public final class HTMLDocument: SearchableNode, XMLDocument {
 		return XPath(doc: self, docPtr: docPtr).css(selector, namespaces: namespaces)
 	}
 
-	public func create(node: String, content: String?) -> XMLElement? {
+	public func create(node: String, content: String? = nil) -> XMLElement? {
 		guard let docPtr else { return nil }
 
 		guard let xmlNode = xmlNewNode(nil, node) else {
