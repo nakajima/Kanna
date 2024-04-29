@@ -245,6 +245,16 @@ public final class HTMLDocument: SearchableNode, XMLDocument {
 
 		return node
 	}
+
+	public func create(text: String) -> XMLElement? {
+		guard let docPtr else { return nil }
+
+		guard let xmlNode = xmlNewText(text.cString(using: .utf8)) else {
+			return nil
+		}
+
+		return XMLElement(document: self, docPtr: docPtr, node: xmlNode)
+	}
 }
 
 /*
