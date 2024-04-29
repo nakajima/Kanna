@@ -137,18 +137,18 @@ extension String.Encoding {
 }
 
 /*
- libxmlHTMLDocument
+ HTMLDocument
  */
-final class libxmlHTMLDocument: HTMLDocument {
+public final class HTMLDocument: SearchableNode, XMLDocument {
 	private var docPtr: htmlDocPtr?
 	private var rootNode: XMLElement?
 	private var html: String
 	private var url: String?
 	private var encoding: String.Encoding
 
-	var text: String? { rootNode?.text }
+	public var text: String? { rootNode?.text }
 
-	var toHTML: String? {
+	public var toHTML: String? {
 		let buf = xmlBufferCreate()
 		let outputBuf = xmlOutputBufferCreateBuffer(buf, nil)
 		defer {
@@ -161,7 +161,7 @@ final class libxmlHTMLDocument: HTMLDocument {
 		return html
 	}
 
-	var toXML: String? {
+	public var toXML: String? {
 		var buf: UnsafeMutablePointer<xmlChar>?
 		let size: UnsafeMutablePointer<Int32>? = nil
 		defer {
@@ -173,23 +173,23 @@ final class libxmlHTMLDocument: HTMLDocument {
 		return html
 	}
 
-	var innerHTML: String? { rootNode?.innerHTML }
+	public var innerHTML: String? { rootNode?.innerHTML }
 
-	var className: String? { nil }
+	public var className: String? { nil }
 
-	var tagName: String? {
+	public var tagName: String? {
 		get { nil }
 		set {}
 	}
 
-	var content: String? {
+	public var content: String? {
 		get { text }
 		set { rootNode?.content = newValue }
 	}
 
-	var namespaces: [Namespace] { getNamespaces(docPtr: docPtr) }
+	public var namespaces: [Namespace] { getNamespaces(docPtr: docPtr) }
 
-	init(html: String, url: String?, encoding: String.Encoding, option: UInt) throws {
+	public init(html: String, url: String?, encoding: String.Encoding, option: UInt) throws {
 		self.html = html
 		self.url = url
 		self.encoding = encoding
@@ -217,21 +217,22 @@ final class libxmlHTMLDocument: HTMLDocument {
 		xmlFreeDoc(docPtr)
 	}
 
-	var title: String? { at_xpath("//title")?.text }
-	var head: XMLElement? { at_xpath("//head") }
-	var body: XMLElement? { at_xpath("//body") }
+	public var title: String? { at_xpath("//title")?.text }
+	public var head: XMLElement? { at_xpath("//head") }
+	public var body: XMLElement? { at_xpath("//body") }
+	public var documentElement: XMLElement? { at_xpath("//html") }
 
-	func xpath(_ xpath: String, namespaces: [String: String]? = nil) -> XPathObject {
+	public func xpath(_ xpath: String, namespaces: [String: String]? = nil) -> XPathObject {
 		guard let docPtr = docPtr else { return .none }
 		return XPath(doc: self, docPtr: docPtr).xpath(xpath, namespaces: namespaces)
 	}
 
-	func css(_ selector: String, namespaces: [String: String]? = nil) -> XPathObject {
+	public func css(_ selector: String, namespaces: [String: String]? = nil) -> XPathObject {
 		guard let docPtr = docPtr else { return .none }
 		return XPath(doc: self, docPtr: docPtr).css(selector, namespaces: namespaces)
 	}
 
-	func create(node: String, content: String?) -> XMLElement? {
+	public func create(node: String, content: String?) -> XMLElement? {
 		guard let docPtr else { return nil }
 
 		guard let xmlNode = xmlNewNode(nil, node) else {

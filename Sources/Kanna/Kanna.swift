@@ -87,7 +87,7 @@ public func XML(url: URL, encoding: String.Encoding, option: ParseOption = kDefa
 public func HTML(html: String, url: String? = nil, encoding: String.Encoding, option: ParseOption = kDefaultHtmlParseOption) throws -> HTMLDocument {
 	switch option {
 	case let .htmlParseUseLibxml(opt):
-		return try libxmlHTMLDocument(html: html, url: url, encoding: encoding, option: opt.rawValue)
+		return try HTMLDocument(html: html, url: url, encoding: encoding, option: opt.rawValue)
 	default:
 		throw ParseError.InvalidOptions
 	}
@@ -199,7 +199,7 @@ public extension XMLDocument {
 /**
  HTMLDocument
  */
-public protocol HTMLDocument: XMLDocument {
+public protocol HTMLDocumentProtocol: XMLDocument {
 	var title: String? { get }
 	var head: XMLElement? { get }
 	var body: XMLElement? { get }
