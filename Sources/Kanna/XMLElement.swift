@@ -243,10 +243,8 @@ public final class XMLElement: Searchable {
 	}
 
 	public func replace(with node: XMLElement) {
-		let oldPtr = nodePtr
 		xmlReplaceNode(nodePtr, node.nodePtr)
 		nodePtr = node.nodePtr
-		xmlFreeNode(oldPtr)
 	}
 
 	private func node(from ptr: xmlNodePtr?) -> XMLElement? {
