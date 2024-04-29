@@ -273,6 +273,15 @@ class KannaTutorialsTests: XCTestCase {
 		XCTAssertEqual("hello ", div.children[0].text)
 		XCTAssertEqual("world", div.children[1].text)
 	}
+
+	func testEquality() throws {
+		let first = try HTML(html: "<div><p>Hello</p><p><strong>World</strong></p>", encoding: .utf8).body
+		let second = try HTML(html: "<div><p>Hello</p><p><strong>World</strong></p>", encoding: .utf8).body
+		let third = try HTML(html: "<div><p>Hello</p><p><strong class='foo'>World</strong></p>", encoding: .utf8).body
+
+		XCTAssertEqual(first, second)
+		XCTAssertNotEqual(second, third)
+	}
 }
 
 extension KannaTutorialsTests {
