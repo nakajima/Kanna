@@ -1,4 +1,4 @@
-/**@file KannaHTMLModifyingTests.swift
+/** @file KannaHTMLModifyingTests.swift
 
  Kanna
 
@@ -22,59 +22,62 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-import XCTest
-import Foundation
 import CoreFoundation
+import Foundation
 @testable import Kanna
+import XCTest
 
 class KannaHTMLModifyingTests: XCTestCase {
-    func testHTML_MovingNode() {
-        let html = "<body><div>A love triangle.<h1>Three's Company</h1></div></body>"
-        let modifyPrevHTML = "<body>\n<h1>Three's Company</h1>\n<div>A love triangle.</div>\n</body>"
-        let modifyNextHTML = "<body>\n<div>A love triangle.</div>\n<h1>Three's Company</h1>\n</body>"
+	func testHTML_MovingNode() {
+		let html = "<body><div>A love triangle.<h1>Three's Company</h1></div></body>"
+		let modifyPrevHTML = "<body>\n<h1>Three's Company</h1>\n<div>A love triangle.</div>\n</body>"
+		let modifyNextHTML = "<body>\n<div>A love triangle.</div>\n<h1>Three's Company</h1>\n</body>"
 
-        do {
-            guard let doc = try? HTML(html: html, encoding: .utf8),
-                let h1 = doc.at_css("h1"),
-                let div = doc.at_css("div") else {
-                    return
-            }
-            div.addPrevSibling(h1)
-            XCTAssert(doc.body!.toHTML == modifyPrevHTML)
-        }
+		do {
+			guard let doc = try? HTML(html: html, encoding: .utf8),
+			      let h1 = doc.at_css("h1"),
+			      let div = doc.at_css("div")
+			else {
+				return
+			}
+			div.addPrevSibling(h1)
+			XCTAssert(doc.body!.toHTML == modifyPrevHTML)
+		}
 
-        do {
-            guard let doc = try? HTML(html: html, encoding: .utf8),
-                let h1 = doc.at_css("h1"),
-                let div = doc.at_css("div") else {
-                    return
-            }
-            div.addNextSibling(h1)
-            XCTAssert(doc.body!.toHTML == modifyNextHTML)
-        }
-    }
+		do {
+			guard let doc = try? HTML(html: html, encoding: .utf8),
+			      let h1 = doc.at_css("h1"),
+			      let div = doc.at_css("div")
+			else {
+				return
+			}
+			div.addNextSibling(h1)
+			XCTAssert(doc.body!.toHTML == modifyNextHTML)
+		}
+	}
 
-    func testHTML_RemoveNode() {
-        let html = "<body><div>A love triangle.<h1>Three's Company</h1></div></body>"
+	func testHTML_RemoveNode() {
+		let html = "<body><div>A love triangle.<h1>Three's Company</h1></div></body>"
 
-        let removedHTML = "<body><div>A love triangle.</div></body>"
+		let removedHTML = "<body><div>A love triangle.</div></body>"
 
-        do {
-            guard let doc = try? HTML(html: html, encoding: .utf8),
-                let h1 = doc.at_css("h1") else {
-                    return
-            }
+		do {
+			guard let doc = try? HTML(html: html, encoding: .utf8),
+			      let h1 = doc.at_css("h1")
+			else {
+				return
+			}
 
-            doc.body?.removeChild(h1)
-            XCTAssert(doc.body!.toHTML == removedHTML)
-        }
-    }
+			doc.body?.removeChild(h1)
+			XCTAssert(doc.body!.toHTML == removedHTML)
+		}
+	}
 }
 
 extension KannaHTMLModifyingTests {
-    static var allTests: [(String, (KannaHTMLModifyingTests) -> () throws -> Void)] {
-        [
-            ("testHTML_MovingNode", testHTML_MovingNode)
-        ]
-    }
+	static var allTests: [(String, (KannaHTMLModifyingTests) -> () throws -> Void)] {
+		[
+			("testHTML_MovingNode", testHTML_MovingNode),
+		]
+	}
 }

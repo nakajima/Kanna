@@ -1,4 +1,4 @@
-/**@file KannaXMLModifyingTests.swift
+/** @file KannaXMLModifyingTests.swift
 
  Kanna
 
@@ -22,43 +22,43 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-import XCTest
-import Foundation
 import CoreFoundation
+import Foundation
 @testable import Kanna
+import XCTest
 
 class KannaXMLModifyingTests: XCTestCase {
-    func testXML_MovingNode() {
-        let xml = "<?xml version=\"1.0\"?><all_item><item><title>item0</title></item><item><title>item1</title></item></all_item>"
-        let modifyPrevXML = "<all_item><item><title>item1</title></item><item><title>item0</title></item></all_item>"
-        let modifyNextXML = "<all_item><item><title>item1</title></item><item><title>item0</title></item></all_item>"
+	func testXML_MovingNode() {
+		let xml = "<?xml version=\"1.0\"?><all_item><item><title>item0</title></item><item><title>item1</title></item></all_item>"
+		let modifyPrevXML = "<all_item><item><title>item1</title></item><item><title>item0</title></item></all_item>"
+		let modifyNextXML = "<all_item><item><title>item1</title></item><item><title>item0</title></item></all_item>"
 
-        do {
-            guard let doc = try? XML(xml: xml, encoding: .utf8) else {
-                return
-            }
-            let item0 = doc.css("item")[0]
-            let item1 = doc.css("item")[1]
-            item0.addPrevSibling(item1)
-            XCTAssert(doc.at_css("all_item")!.toXML == modifyPrevXML)
-        }
+		do {
+			guard let doc = try? XML(xml: xml, encoding: .utf8) else {
+				return
+			}
+			let item0 = doc.css("item")[0]
+			let item1 = doc.css("item")[1]
+			item0.addPrevSibling(item1)
+			XCTAssert(doc.at_css("all_item")!.toXML == modifyPrevXML)
+		}
 
-        do {
-            guard let doc = try? XML(xml: xml, encoding: .utf8) else {
-                return
-            }
-            let item0 = doc.css("item")[0]
-            let item1 = doc.css("item")[1]
-            item1.addNextSibling(item0)
-            XCTAssert(doc.at_css("all_item")!.toXML == modifyNextXML)
-        }
-    }
+		do {
+			guard let doc = try? XML(xml: xml, encoding: .utf8) else {
+				return
+			}
+			let item0 = doc.css("item")[0]
+			let item1 = doc.css("item")[1]
+			item1.addNextSibling(item0)
+			XCTAssert(doc.at_css("all_item")!.toXML == modifyNextXML)
+		}
+	}
 }
 
 extension KannaXMLModifyingTests {
-    static var allTests: [(String, (KannaXMLModifyingTests) -> () throws -> Void)] {
-        [
-            ("testXML_MovingNode", testXML_MovingNode)
-        ]
-    }
+	static var allTests: [(String, (KannaXMLModifyingTests) -> () throws -> Void)] {
+		[
+			("testXML_MovingNode", testXML_MovingNode),
+		]
+	}
 }

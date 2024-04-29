@@ -9,11 +9,11 @@
 import Foundation
 
 extension Bundle {
-    static func testBundle(for aClass: AnyClass) -> Bundle {
-#if SWIFT_PACKAGE
-        module
-#else
-        Bundle(for: aClass)
-#endif
-    }
+	static func testBundle(for aClass: AnyClass) -> Bundle {
+		#if SWIFT_PACKAGE
+			module
+		#else
+			Bundle(for: aClass)
+		#endif
+	}
 }
