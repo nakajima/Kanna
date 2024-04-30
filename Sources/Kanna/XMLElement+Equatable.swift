@@ -7,12 +7,12 @@
 
 import Foundation
 
-extension XMLElement: Equatable {
-	public static func == (lhs: XMLElement, rhs: XMLElement) -> Bool {
+extension XMLNode: Equatable {
+	public static func == (lhs: XMLNode, rhs: XMLNode) -> Bool {
 		lhs.sameAs(to: rhs)
 	}
 
-	func sameAs(to element: XMLElement) -> Bool {
+	func sameAs(to element: XMLNode) -> Bool {
 		if text != element.text || tagName != element.tagName || attributes != element.attributes {
 			return false
 		}

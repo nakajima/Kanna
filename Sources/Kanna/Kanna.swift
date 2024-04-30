@@ -133,7 +133,7 @@ public extension Searchable {
 		self.xpath(xpath, namespaces: namespaces)
 	}
 
-	func at_xpath(_ xpath: String, namespaces: [String: String]? = nil) -> XMLElement? {
+	func at_xpath(_ xpath: String, namespaces: [String: String]? = nil) -> XMLNode? {
 		self.xpath(xpath, namespaces: namespaces).nodeSetValue.first
 	}
 
@@ -141,7 +141,7 @@ public extension Searchable {
 		css(selector, namespaces: namespaces)
 	}
 
-	func at_css(_ selector: String, namespaces: [String: String]? = nil) -> XMLElement? {
+	func at_css(_ selector: String, namespaces: [String: String]? = nil) -> XMLNode? {
 		css(selector, namespaces: namespaces).nodeSetValue.first
 	}
 }
@@ -163,20 +163,20 @@ public protocol SearchableNode: Searchable {
  XMLElement
  */
 public protocol XMLElementProtocol: AnyObject, SearchableNode {
-	var parent: XMLElement? { get set }
+	var parent: XMLNode? { get set }
 	var attributes: [String: String?] { get }
-	var children: [XMLElement] { get }
+	var children: [XMLNode] { get }
 	subscript(_: String) -> String? { get set }
 
-	func addPrevSibling(_ node: XMLElement)
-	func addNextSibling(_ node: XMLElement)
-	func removeChild(_ node: XMLElement)
-	func replace(with: XMLElement)
-	func addChild(_ node: XMLElement)
-	var nextElementSibling: XMLElement? { get }
-	var previousElementSibling: XMLElement? { get }
-	var nextSibling: XMLElement? { get }
-	var previousSibling: XMLElement? { get }
+	func addPrevSibling(_ node: XMLNode)
+	func addNextSibling(_ node: XMLNode)
+	func removeChild(_ node: XMLNode)
+	func replace(with: XMLNode)
+	func addChild(_ node: XMLNode)
+	var nextElementSibling: XMLNode? { get }
+	var previousElementSibling: XMLNode? { get }
+	var nextSibling: XMLNode? { get }
+	var previousSibling: XMLNode? { get }
 }
 
 /**
@@ -201,16 +201,16 @@ public extension XMLDocument {
  */
 public protocol HTMLDocumentProtocol: XMLDocument {
 	var title: String? { get }
-	var head: XMLElement? { get }
-	var body: XMLElement? { get }
-	func create(node: String, content: String?) -> XMLElement?
+	var head: XMLNode? { get }
+	var body: XMLNode? { get }
+	func create(node: String, content: String?) -> XMLNode?
 }
 
 /**
  XMLNodeSet
  */
 public final class XMLNodeSet {
-	private var nodes: [XMLElement]
+	private var nodes: [XMLNode]
 
 	public var toHTML: String? {
 		let html = nodes.reduce("") {
@@ -242,26 +242,26 @@ public final class XMLNodeSet {
 		return html
 	}
 
-	public subscript(index: Int) -> XMLElement {
+	public subscript(index: Int) -> XMLNode {
 		nodes[index]
 	}
 
 	public var count: Int { nodes.count }
 
-	init(nodes: [XMLElement] = []) {
+	init(nodes: [XMLNode] = []) {
 		self.nodes = nodes
 	}
 
-	public func at(_ index: Int) -> XMLElement? {
+	public func at(_ index: Int) -> XMLNode? {
 		count > index ? nodes[index] : nil
 	}
 
-	public var first: XMLElement? { at(0) }
-	public var last: XMLElement? { at(count - 1) }
+	public var first: XMLNode? { at(0) }
+	public var last: XMLNode? { at(count - 1) }
 }
 
 extension XMLNodeSet: Sequence {
-	public typealias Iterator = AnyIterator<XMLElement>
+	public typealias Iterator = AnyIterator<XMLNode>
 	public func makeIterator() -> Iterator {
 		var index = 0
 		return AnyIterator {
@@ -303,11 +303,11 @@ extension XPathObject {
 				return
 			}
 
-			var nodes: [XMLElement] = []
+			var nodes: [XMLNode] = []
 			let size = Int(nodeSet.pointee.nodeNr)
 			for i in 0 ..< size {
 				let node: xmlNodePtr = nodeTab[i]!
-				let htmlNode = XMLElement(document: document, docPtr: docPtr, node: node)
+				let htmlNode = XMLNode(document: document, docPtr: docPtr, node: node)
 				nodes.append(htmlNode)
 			}
 			self = .NodeSet(nodeset: XMLNodeSet(nodes: nodes))
@@ -330,11 +330,11 @@ extension XPathObject {
 		}
 	}
 
-	public subscript(index: Int) -> XMLElement {
+	public subscript(index: Int) -> XMLNode {
 		nodeSet![index]
 	}
 
-	public var first: XMLElement? {
+	public var first: XMLNode? {
 		nodeSet?.first
 	}
 
@@ -388,7 +388,7 @@ extension XPathObject {
 }
 
 extension XPathObject: Sequence {
-	public typealias Iterator = AnyIterator<XMLElement>
+	public typealias Iterator = AnyIterator<XMLNode>
 	public func makeIterator() -> Iterator {
 		var index = 0
 		return AnyIterator {

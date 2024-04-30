@@ -28,7 +28,7 @@ import libxml2
 /**
  libxmlHTMLNode
  */
-public final class XMLElement: Searchable {
+public final class XMLNode: Searchable {
 	public var text: String? {
 		return libxmlGetNodeContent(nodePtr)
 	}
@@ -109,7 +109,7 @@ public final class XMLElement: Searchable {
 		}
 	}
 
-	public var parent: XMLElement? {
+	public var parent: XMLNode? {
 		get {
 			let parent = withUnsafeMutablePointer(to: &nodePtr.pointee) {
 				$0.pointee.parent
@@ -119,7 +119,7 @@ public final class XMLElement: Searchable {
 				return nil
 			}
 
-			return XMLElement(document: doc, docPtr: docPtr, node: UnsafeMutablePointer(parent))
+			return XMLNode(document: doc, docPtr: docPtr, node: UnsafeMutablePointer(parent))
 		}
 		set {
 			if let node = newValue {
@@ -128,38 +128,38 @@ public final class XMLElement: Searchable {
 		}
 	}
 
-	public var firstElementChild: XMLElement? {
+	public var firstElementChild: XMLNode? {
 		node(from: xmlFirstElementChild(nodePtr))
 	}
 
-	public var firstChild: XMLElement? {
+	public var firstChild: XMLNode? {
 		node(from: nodePtr.pointee.children)
 	}
 
-	public var lastElementChild: XMLElement? {
+	public var lastElementChild: XMLNode? {
 		node(from: xmlLastElementChild(nodePtr))
 	}
 
-	public var nextElementSibling: XMLElement? {
+	public var nextElementSibling: XMLNode? {
 		node(from: xmlNextElementSibling(nodePtr))
 	}
 
-	public var previousElementSibling: XMLElement? {
+	public var previousElementSibling: XMLNode? {
 		node(from: xmlPreviousElementSibling(nodePtr))
 	}
 
-	public var nextSibling: XMLElement? {
+	public var nextSibling: XMLNode? {
 		node(from: nodePtr.pointee.next)
 	}
 
-	public var previousSibling: XMLElement? {
+	public var previousSibling: XMLNode? {
 		node(from: nodePtr.pointee.prev)
 	}
 
-	public var children: [XMLElement] {
-		var result: [XMLElement] = []
+	public var children: [XMLNode] {
+		var result: [XMLNode] = []
 		if let child = nodePtr.pointee.children {
-			var childNode = XMLElement(
+			var childNode = XMLNode(
 				document: doc,
 				docPtr: docPtr,
 				node: child
@@ -261,35 +261,35 @@ public final class XMLElement: Searchable {
 		return XPath(doc: doc, docPtr: docPtr, nodePtr: nodePtr).css(selector, namespaces: namespaces)
 	}
 
-	public func addPrevSibling(_ node: XMLElement) {
+	public func addPrevSibling(_ node: XMLNode) {
 		xmlAddPrevSibling(nodePtr, node.nodePtr)
 	}
 
-	public func addNextSibling(_ node: XMLElement) {
+	public func addNextSibling(_ node: XMLNode) {
 		xmlAddNextSibling(nodePtr, node.nodePtr)
 	}
 
-	public func addChild(_ node: XMLElement) {
+	public func addChild(_ node: XMLNode) {
 		xmlUnlinkNode(node.nodePtr)
 		xmlAddChild(nodePtr, node.nodePtr)
 	}
 
-	public func removeChild(_ node: XMLElement) {
+	public func removeChild(_ node: XMLNode) {
 		xmlUnlinkNode(node.nodePtr)
 		xmlFreeNode(node.nodePtr)
 	}
 
-	public func replace(with node: XMLElement) {
+	public func replace(with node: XMLNode) {
 		xmlReplaceNode(nodePtr, node.nodePtr)
 		nodePtr = node.nodePtr
 	}
 
-	private func node(from ptr: xmlNodePtr?) -> XMLElement? {
+	private func node(from ptr: xmlNodePtr?) -> XMLNode? {
 		guard let doc = doc, let nodePtr = ptr else {
 			return nil
 		}
 
-		return XMLElement(document: doc, docPtr: docPtr, node: nodePtr)
+		return XMLNode(document: doc, docPtr: docPtr, node: nodePtr)
 	}
 }
 

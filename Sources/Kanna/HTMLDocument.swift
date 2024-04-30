@@ -141,7 +141,7 @@ extension String.Encoding {
  */
 public final class HTMLDocument: SearchableNode, XMLDocument {
 	private var docPtr: htmlDocPtr?
-	private var rootNode: XMLElement?
+	private var rootNode: XMLNode?
 	private var html: String
 	public var url: String?
 	private var encoding: String.Encoding
@@ -210,7 +210,7 @@ public final class HTMLDocument: SearchableNode, XMLDocument {
 			throw ParseError.EncodingMismatch
 		}
 
-		self.rootNode = try XMLElement(document: self, docPtr: docPtr)
+		self.rootNode = try XMLNode(document: self, docPtr: docPtr)
 	}
 
 	deinit {
@@ -218,9 +218,9 @@ public final class HTMLDocument: SearchableNode, XMLDocument {
 	}
 
 	public var title: String? { at_xpath("//title")?.text }
-	public var head: XMLElement? { at_xpath("//head") }
-	public var body: XMLElement? { at_xpath("//body") }
-	public var documentElement: XMLElement? { at_xpath("//html") }
+	public var head: XMLNode? { at_xpath("//head") }
+	public var body: XMLNode? { at_xpath("//body") }
+	public var documentElement: XMLNode? { at_xpath("//html") }
 
 	public func xpath(_ xpath: String, namespaces: [String: String]? = nil) -> XPathObject {
 		guard let docPtr = docPtr else { return .none }
@@ -232,7 +232,7 @@ public final class HTMLDocument: SearchableNode, XMLDocument {
 		return XPath(doc: self, docPtr: docPtr).css(selector, namespaces: namespaces)
 	}
 
-	public func create(node: String, content: String? = nil) -> XMLElement? {
+	public func create(node: String, content: String? = nil) -> XMLNode? {
 		guard let docPtr else { return nil }
 
 		guard let xmlNode = xmlNewNode(nil, node) else {
@@ -240,20 +240,20 @@ public final class HTMLDocument: SearchableNode, XMLDocument {
 			return nil
 		}
 
-		let node = XMLElement(document: self, docPtr: docPtr, node: xmlNode)
+		let node = XMLNode(document: self, docPtr: docPtr, node: xmlNode)
 		node.content = content
 
 		return node
 	}
 
-	public func create(text: String) -> XMLElement? {
+	public func create(text: String) -> XMLNode? {
 		guard let docPtr else { return nil }
 
 		guard let xmlNode = xmlNewText(text.cString(using: .utf8)) else {
 			return nil
 		}
 
-		return XMLElement(document: self, docPtr: docPtr, node: xmlNode)
+		return XMLNode(document: self, docPtr: docPtr, node: xmlNode)
 	}
 }
 
@@ -262,7 +262,7 @@ public final class HTMLDocument: SearchableNode, XMLDocument {
  */
 final class libxmlXMLDocument: XMLDocument {
 	private var docPtr: xmlDocPtr?
-	private var rootNode: XMLElement?
+	private var rootNode: XMLNode?
 	private var xml: String
 	private var url: String?
 	private var encoding: String.Encoding
@@ -326,7 +326,7 @@ final class libxmlXMLDocument: XMLDocument {
 		}
 		let url = ""
 		self.docPtr = cur.withUnsafeBytes { xmlReadDoc($0.bindMemory(to: xmlChar.self).baseAddress!, url, charsetName, CInt(option)) }
-		self.rootNode = try XMLElement(document: self, docPtr: docPtr!)
+		self.rootNode = try XMLNode(document: self, docPtr: docPtr!)
 	}
 
 	deinit {

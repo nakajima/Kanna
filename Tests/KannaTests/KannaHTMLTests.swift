@@ -188,7 +188,7 @@ class KannaHTMLTests: XCTestCase {
 			return
 		}
 
-		var elements: [Kanna.XMLElement] = []
+		var elements: [Kanna.XMLNode] = []
 
 		do {
 			let html = try String(contentsOfFile: path, encoding: .utf8)
