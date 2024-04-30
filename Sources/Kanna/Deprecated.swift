@@ -12,17 +12,17 @@ import Foundation
 // XML
 // -------------------------------------------------------------
 @available(*, unavailable, message: "Use XML(xml: String, url: String?, encoding: String.Encoding, option: ParseOption). The type of the second argument has been changed to String.Encoding from UInt.")
-public func XML(xml _: String, url _: String? = nil, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> XMLDocument? {
+public func XML(xml _: String, url _: String? = nil, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> (any XMLDocument)? {
 	nil
 }
 
 @available(*, unavailable, message: "Use XML(xml: Data, url: String?, encoding: String.Encoding, option: ParseOption). The type of the first argument has been changed to Data and the type of the second argument has been changed to String.Encoding from UInt.")
-public func XML(xml _: NSData, url _: String? = nil, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> XMLDocument? {
+public func XML(xml _: NSData, url _: String? = nil, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> (any XMLDocument)? {
 	nil
 }
 
 @available(*, unavailable, message: "Use XML(url: URL, encoding: String.Encoding, option: ParseOption). The type of the second argument has been changed to String.Encoding from UInt.")
-public func XML(url _: URL, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> XMLDocument? {
+public func XML(url _: URL, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> (any XMLDocument)? {
 	nil
 }
 
@@ -30,16 +30,16 @@ public func XML(url _: URL, encoding _: UInt, option _: ParseOption = kDefaultXm
 // HTML
 // -------------------------------------------------------------
 @available(*, unavailable, message: "Use HTML(html: String, url: String?, encoding: String.Encoding, option: ParseOption). The type of the second argument has been changed to String.Encoding from UInt.")
-public func HTML(html _: String, url _: String? = nil, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> XMLDocument? {
+public func HTML(html _: String, url _: String? = nil, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> (any XMLDocument)? {
 	nil
 }
 
 @available(*, unavailable, message: "Use HTML(html: Data, url: String?, encoding: String.Encoding, option: ParseOption). The type of the first argument has been changed to Data and the type of the second argument has been changed to String.Encoding from UInt.")
-public func HTML(html _: NSData, url _: String? = nil, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> XMLDocument? {
+public func HTML(html _: NSData, url _: String? = nil, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> (any XMLDocument)? {
 	nil
 }
 
 @available(*, unavailable, message: "Use HTML(url: URL, encoding: String.Encoding, option: ParseOption). The type of the second argument has been changed to String.Encoding from UInt.")
-public func HTML(url _: URL, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> XMLDocument? {
+public func HTML(url _: URL, encoding _: UInt, option _: ParseOption = kDefaultXmlParseOption) -> (any XMLDocument)? {
 	nil
 }

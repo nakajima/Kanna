@@ -51,7 +51,7 @@ public enum ParseError: Error {
  @param encoding the document encoding
  @param options  a ParserOption
  */
-public func XML(xml: String, url: String? = nil, encoding: String.Encoding, option: ParseOption = kDefaultXmlParseOption) throws -> XMLDocument {
+public func XML(xml: String, url: String? = nil, encoding: String.Encoding, option: ParseOption = kDefaultXmlParseOption) throws -> any XMLDocument {
 	switch option {
 	case let .xmlParseUseLibxml(opt):
 		return try libxmlXMLDocument(xml: xml, url: url, encoding: encoding, option: opt.rawValue)
@@ -61,7 +61,7 @@ public func XML(xml: String, url: String? = nil, encoding: String.Encoding, opti
 }
 
 // NSData
-public func XML(xml: Data, url: String? = nil, encoding: String.Encoding, option: ParseOption = kDefaultXmlParseOption) throws -> XMLDocument {
+public func XML(xml: Data, url: String? = nil, encoding: String.Encoding, option: ParseOption = kDefaultXmlParseOption) throws -> any XMLDocument {
 	guard let xmlStr = String(data: xml, encoding: encoding) else {
 		throw ParseError.EncodingMismatch
 	}
@@ -69,7 +69,7 @@ public func XML(xml: Data, url: String? = nil, encoding: String.Encoding, option
 }
 
 // NSURL
-public func XML(url: URL, encoding: String.Encoding, option: ParseOption = kDefaultXmlParseOption) throws -> XMLDocument {
+public func XML(url: URL, encoding: String.Encoding, option: ParseOption = kDefaultXmlParseOption) throws -> any XMLDocument {
 	guard let data = try? Data(contentsOf: url) else {
 		throw ParseError.EncodingMismatch
 	}
@@ -295,7 +295,7 @@ public enum XPathObject {
 }
 
 extension XPathObject {
-	init(document: XMLDocument?, docPtr: xmlDocPtr, object: xmlXPathObject) {
+	init(document: (any XMLDocument)?, docPtr: xmlDocPtr, object: xmlXPathObject) {
 		switch object.type {
 		case XPATH_NODESET:
 			guard let nodeSet = object.nodesetval, nodeSet.pointee.nodeNr != 0, let nodeTab = nodeSet.pointee.nodeTab else {

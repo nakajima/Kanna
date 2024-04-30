@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 
@@ -28,6 +28,7 @@ import PackageDescription
 
 let package = Package(
 	name: "Kanna",
+	platforms: [.macOS(.v14), .iOS(.v17)],
 	products: [
 		.library(name: "Kanna", targets: ["Kanna"]),
 	],
@@ -49,6 +50,10 @@ let package = Package(
 			],
 			resources: [
 				.copy("Kanna/PrivacyInfo.xcprivacy"),
+			],
+			swiftSettings: [
+				.enableUpcomingFeature("StrictConcurrency"),
+				.enableUpcomingFeature("ExistentialAny"),
 			]
 		),
 		.testTarget(

@@ -136,6 +136,10 @@ public final class XMLNode: Searchable {
 		node(from: nodePtr.pointee.children)
 	}
 
+	public var lastChild: XMLNode? {
+		node(from: nodePtr.pointee.last)
+	}
+
 	public var lastElementChild: XMLNode? {
 		node(from: xmlLastElementChild(nodePtr))
 	}
@@ -178,11 +182,11 @@ public final class XMLNode: Searchable {
 		}
 	}
 
-	private weak var weakDocument: XMLDocument?
-	private var document: XMLDocument?
+	private weak var weakDocument: (any XMLDocument)?
+	private var document: (any XMLDocument)?
 	private var docPtr: htmlDocPtr
 	private var nodePtr: xmlNodePtr
-	private var doc: XMLDocument? {
+	private var doc: (any XMLDocument)? {
 		weakDocument ?? document
 	}
 
@@ -232,7 +236,7 @@ public final class XMLNode: Searchable {
 		return result
 	}
 
-	public init(document: XMLDocument?, docPtr: xmlDocPtr) throws {
+	public init(document: (any XMLDocument)?, docPtr: xmlDocPtr) throws {
 		self.weakDocument = document
 		self.docPtr = docPtr
 		guard let nodePtr = xmlDocGetRootElement(docPtr) else {
@@ -243,7 +247,7 @@ public final class XMLNode: Searchable {
 		self.nodePtr = nodePtr
 	}
 
-	public init(document: XMLDocument?, docPtr: xmlDocPtr, node: xmlNodePtr) {
+	public init(document: (any XMLDocument)?, docPtr: xmlDocPtr, node: xmlNodePtr) {
 		self.document = document
 		self.docPtr = docPtr
 		self.nodePtr = node

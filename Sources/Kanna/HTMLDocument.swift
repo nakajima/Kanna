@@ -346,7 +346,7 @@ final class libxmlXMLDocument: XMLDocument {
 }
 
 struct XPath {
-	private let doc: XMLDocument
+	private let doc: any XMLDocument
 	private var docPtr: xmlDocPtr
 	private var nodePtr: xmlNodePtr?
 	private var isRoot: Bool {
@@ -354,7 +354,7 @@ struct XPath {
 		return xmlDocGetRootElement(docPtr) == nodePtr
 	}
 
-	init(doc: XMLDocument, docPtr: xmlDocPtr, nodePtr: xmlNodePtr? = nil) {
+	init(doc: any XMLDocument, docPtr: xmlDocPtr, nodePtr: xmlNodePtr? = nil) {
 		self.doc = doc
 		self.docPtr = docPtr
 		self.nodePtr = nodePtr
