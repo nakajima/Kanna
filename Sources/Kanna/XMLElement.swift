@@ -294,15 +294,17 @@ public final class XMLElement: Searchable {
 }
 
 private func libxmlGetNodeContent(_ nodePtr: xmlNodePtr) -> String? {
-	let content = xmlNodeGetContent(nodePtr)
+	guard let content = xmlNodeGetContent(nodePtr) else {
+		return nil
+	}
 	defer {
 		#if swift(>=4.1)
-			content?.deallocate()
+			content.deallocate()
 		#else
-			content?.deallocate(capacity: 1)
+			content.deallocate(capacity: 1)
 		#endif
 	}
-	if let result = String(validatingUTF8: UnsafeRawPointer(content!).assumingMemoryBound(to: CChar.self)) {
+	if let result = String(validatingUTF8: UnsafeRawPointer(content).assumingMemoryBound(to: CChar.self)) {
 		return result
 	}
 	return nil
