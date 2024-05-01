@@ -168,10 +168,13 @@ public final class XMLNode: Searchable {
 
 	public var children: [XMLNode] {
 		var result: [XMLNode] = []
+		
 		if var child = nodePtr.pointee.children {
 			if let childNode = node(from: child) {
 				result.append(childNode)
 			}
+
+			print(child.pointee.next.debugDescription)
 
 			while let nextChildPtr = child.pointee.next {
 				if let nextChild = node(from: nextChildPtr) {
