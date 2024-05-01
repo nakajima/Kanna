@@ -153,7 +153,8 @@ public final class XMLNode: Searchable {
 	}
 
 	public var nextSibling: XMLNode? {
-		node(from: nodePtr.pointee.next)
+		print(toHTML)
+		return node(from: nodePtr.pointee.next)
 	}
 
 	public var previousSibling: XMLNode? {

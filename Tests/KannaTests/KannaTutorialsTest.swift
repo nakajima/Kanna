@@ -319,6 +319,39 @@ class KannaTutorialsTests: XCTestCase {
 
 		XCTAssertEqual(document.body!.toHTML, "<body><p>different</p></body>")
 	}
+
+	func testNilNextSibling() throws {
+		let document = try HTML(html: """
+		<div>
+			<p>
+				<strong>
+					Hi
+				</strong>
+				<em>
+					Sup
+				</em></p>
+		</div>
+		""", encoding: .utf8)
+
+		XCTAssertNil(document.at_css("div")!.nextSibling)
+	}
+
+	func testLastChild() throws {
+		let document = try HTML(html: """
+		<div>
+			<p>
+				<strong>
+					Hi
+				</strong>
+				<em>
+					Sup
+				</em></p>
+		</div>
+		""", encoding: .utf8)
+
+		let lastChild = document.at_css("p")?.lastChild
+		XCTAssertEqual("EM", lastChild?.tagName?.uppercased())
+	}
 }
 
 extension KannaTutorialsTests {
