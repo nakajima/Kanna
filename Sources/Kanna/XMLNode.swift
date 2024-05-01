@@ -47,7 +47,7 @@ public final class XMLNode: Searchable {
 	}
 
 	deinit {
-		if let nodePtr {
+		if let nodePtr, nodePtr.pointee != nil {
 			xmlFreeNode(nodePtr)
 		}
 	}
