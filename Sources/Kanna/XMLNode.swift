@@ -153,7 +153,6 @@ public final class XMLNode: Searchable {
 	}
 
 	public var nextSibling: XMLNode? {
-		print(toHTML)
 		return node(from: nodePtr.pointee.next)
 	}
 
@@ -163,18 +162,16 @@ public final class XMLNode: Searchable {
 
 	public var children: [XMLNode] {
 		var result: [XMLNode] = []
-		if let child = nodePtr.pointee.children {
-			var childNode = XMLNode(
-				document: doc,
-				docPtr: docPtr,
-				node: child
-			)
+		if var child = nodePtr.pointee.children {
+			if let childNode = node(from: child) {
+				result.append(childNode)
+			}
 
-			result.append(childNode)
-
-			while let nextChild = childNode.nextSibling {
-				result.append(nextChild)
-				childNode = nextChild
+			while let nextChildPtr = child.pointee.next {
+				if let nextChild = node(from: nextChildPtr) {
+					result.append(nextChild)
+					child = nextChildPtr
+				}
 			}
 
 			return result
