@@ -29,7 +29,32 @@ import libxml2
  libxmlHTMLNode
  */
 public final class XMLNode: Searchable {
+	public init(document: (any XMLDocument)?, docPtr: xmlDocPtr) throws {
+		self.weakDocument = document
+		self.docPtr = docPtr
+		guard let nodePtr = xmlDocGetRootElement(docPtr) else {
+			// Error handling is omitted, and will be added if necessary in the future.
+			// e.g: if let error = xmlGetLastError(), error.pointee.code == XML_ERR_DOCUMENT_EMPTY.rawValue
+			throw ParseError.Empty
+		}
+		self.nodePtr = nodePtr
+	}
+
+	public init(document: (any XMLDocument)?, docPtr: xmlDocPtr, node: xmlNodePtr) {
+		self.document = document
+		self.docPtr = docPtr
+		self.nodePtr = node
+	}
+
+	deinit {
+		if let nodePtr {
+			xmlFreeNode(nodePtr)
+		}
+	}
+
 	public var text: String? {
+		guard let nodePtr else { return nil}
+
 		return libxmlGetNodeContent(nodePtr)
 	}
 
@@ -93,6 +118,8 @@ public final class XMLNode: Searchable {
 
 	public var tagName: String? {
 		get {
+			guard let nodePtr else { return nil}
+
 			guard let name = nodePtr.pointee.name else {
 				return nil
 			}
@@ -117,6 +144,8 @@ public final class XMLNode: Searchable {
 
 	public var parent: XMLNode? {
 		get {
+			guard let nodePtr else { return nil}
+
 			let parent = withUnsafeMutablePointer(to: &nodePtr.pointee) {
 				$0.pointee.parent
 			}
@@ -135,40 +164,49 @@ public final class XMLNode: Searchable {
 	}
 
 	public var firstElementChild: XMLNode? {
-		node(from: xmlFirstElementChild(nodePtr))
+		guard let nodePtr else { return nil}
+		return node(from: xmlFirstElementChild(nodePtr))
 	}
 
 	public var firstChild: XMLNode? {
-		node(from: nodePtr.pointee.children)
+		guard let nodePtr else { return nil}
+		return node(from: nodePtr.pointee.children)
 	}
 
 	public var lastChild: XMLNode? {
-		node(from: nodePtr.pointee.last)
+		guard let nodePtr else { return nil}
+		return node(from: nodePtr.pointee.last)
 	}
 
 	public var lastElementChild: XMLNode? {
-		node(from: xmlLastElementChild(nodePtr))
+		guard let nodePtr else { return nil}
+		return node(from: xmlLastElementChild(nodePtr))
 	}
 
 	public var nextElementSibling: XMLNode? {
-		node(from: xmlNextElementSibling(nodePtr))
+		guard let nodePtr else { return nil}
+		return node(from: xmlNextElementSibling(nodePtr))
 	}
 
 	public var previousElementSibling: XMLNode? {
-		node(from: xmlPreviousElementSibling(nodePtr))
+		guard let nodePtr else { return nil}
+		return node(from: xmlPreviousElementSibling(nodePtr))
 	}
 
 	public var nextSibling: XMLNode? {
+		guard let nodePtr else { return nil}
 		return node(from: nodePtr.pointee.next)
 	}
 
 	public var previousSibling: XMLNode? {
-		node(from: nodePtr.pointee.prev)
+		guard let nodePtr else { return nil}
+		return node(from: nodePtr.pointee.prev)
 	}
 
 	public var children: [XMLNode] {
 		var result: [XMLNode] = []
-		
+		guard let nodePtr else { return [] }
+
 		if var child = nodePtr.pointee.children {
 			if let childNode = node(from: child) {
 				result.append(childNode)
@@ -194,13 +232,15 @@ public final class XMLNode: Searchable {
 	private weak var weakDocument: (any XMLDocument)?
 	private var document: (any XMLDocument)?
 	private var docPtr: htmlDocPtr
-	private var nodePtr: xmlNodePtr
+	private var nodePtr: xmlNodePtr?
 	private var doc: (any XMLDocument)? {
 		weakDocument ?? document
 	}
 
 	public subscript(attributeName: String) -> String? {
 		get {
+			guard let nodePtr else { return nil}
+
 			var attr = nodePtr.pointee.properties
 			while attr != nil {
 				let mem = attr!.pointee
@@ -228,6 +268,9 @@ public final class XMLNode: Searchable {
 
 	public var attributes: [String: String?] {
 		var result: [String: String?] = [:]
+
+		guard let nodePtr else { return [:] }
+
 		var attribute = nodePtr.pointee.properties
 
 		while let attr = attribute {
@@ -243,23 +286,6 @@ public final class XMLNode: Searchable {
 		}
 
 		return result
-	}
-
-	public init(document: (any XMLDocument)?, docPtr: xmlDocPtr) throws {
-		self.weakDocument = document
-		self.docPtr = docPtr
-		guard let nodePtr = xmlDocGetRootElement(docPtr) else {
-			// Error handling is omitted, and will be added if necessary in the future.
-			// e.g: if let error = xmlGetLastError(), error.pointee.code == XML_ERR_DOCUMENT_EMPTY.rawValue
-			throw ParseError.Empty
-		}
-		self.nodePtr = nodePtr
-	}
-
-	public init(document: (any XMLDocument)?, docPtr: xmlDocPtr, node: xmlNodePtr) {
-		self.document = document
-		self.docPtr = docPtr
-		self.nodePtr = node
 	}
 
 	// MARK: Searchable
@@ -289,12 +315,10 @@ public final class XMLNode: Searchable {
 
 	public func removeChild(_ node: XMLNode) {
 		xmlUnlinkNode(node.nodePtr)
-		xmlFreeNode(node.nodePtr)
 	}
 
 	public func remove() {
 		xmlUnlinkNode(nodePtr)
-		xmlFreeNode(nodePtr)
 	}
 
 	public func replace(with node: XMLNode) {
