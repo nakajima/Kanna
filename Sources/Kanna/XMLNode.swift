@@ -46,12 +46,6 @@ public final class XMLNode: Searchable {
 		self.nodePtr = node
 	}
 
-	deinit {
-		if let nodePtr, nodePtr.pointee != nil {
-			xmlFreeNode(nodePtr)
-		}
-	}
-
 	public var text: String? {
 		guard let nodePtr else { return nil}
 
