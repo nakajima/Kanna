@@ -174,7 +174,9 @@ public final class XMLNode: Searchable {
 				result.append(childNode)
 			}
 
-			print(child.pointee.next.debugDescription)
+			if child.pointee.next == nil {
+				return result
+			}
 
 			while let nextChildPtr = child.pointee.next {
 				if let nextChild = node(from: nextChildPtr) {
