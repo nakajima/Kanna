@@ -281,6 +281,11 @@ public final class XMLNode: Searchable {
 		xmlFreeNode(node.nodePtr)
 	}
 
+	public func remove() {
+		xmlUnlinkNode(nodePtr)
+		xmlFreeNode(nodePtr)
+	}
+
 	public func replace(with node: XMLNode) {
 		xmlReplaceNode(nodePtr, node.nodePtr)
 		nodePtr = node.nodePtr
