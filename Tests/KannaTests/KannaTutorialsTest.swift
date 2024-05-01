@@ -10,7 +10,21 @@ import Foundation
 import Kanna
 import XCTest
 
+extension XMLNode: CustomStringConvertible {
+	public var description: String {
+		toHTML ?? "nohtml"
+	}
+}
+
 class KannaTutorialsTests: XCTestCase {
+	func assertEqual(html: String, result: XMLNode?, line: UInt = #line) {
+		XCTAssertEqual(
+			try HTML(html: html, encoding: .utf8).body!.children.first,
+			result,
+			line: line
+		)
+	}
+
 	func testParsingFromString() {
 		let html = "<html><body><h1>Tutorials</h1></body></html>"
 		if let htmlDoc = try? HTML(html: html, encoding: .utf8) {
@@ -351,6 +365,49 @@ class KannaTutorialsTests: XCTestCase {
 
 		let lastChild = document.at_css("p")?.lastChild
 		XCTAssertEqual("EM", lastChild?.tagName?.uppercased())
+	}
+
+	func testDeepCopy() throws {
+		let document = try HTML(html: """
+		<html>
+		<body>
+		<div>
+		<p>
+		<strong>
+		Hi
+		</strong>
+		<em>
+		Sup
+		</em>
+		</p>
+		</div>
+		</body>
+		</html>
+		""", encoding: .utf8)
+
+		let body = document.at_css("div")!
+		let copy = body.recursiveCopy()!
+
+		assertEqual(html: """
+		<div>
+		<p>
+		<strong>
+		Hi
+		</strong>
+		<em>
+		Sup
+		</em>
+		</p>
+		</div>
+		""", result: copy)
+
+		document.body!.innerHTML = "<sup></sup>"
+
+		// make sure it's actually a copy
+		XCTAssertEqual(0, body.children.count)
+
+		XCTAssertEqual(1, copy.children.filter { $0.tagName != "text" }.count)
+		print(copy.children.map(\.toHTML))
 	}
 }
 

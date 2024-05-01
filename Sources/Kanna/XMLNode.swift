@@ -302,6 +302,32 @@ public final class XMLNode: Searchable {
 		nodePtr = node.nodePtr
 	}
 
+	public func recursiveCopy() -> XMLNode? {
+		guard let newNode = node(from: xmlNewNode(nil, tagName)) else {
+			return nil
+		}
+
+		for (name, value) in attributes {
+			newNode[name] = value
+		}
+
+		for child in children {
+			if child.tagName == "text",
+				 let textNodePtr = xmlNewText(child.text),
+				 let textNode = node(from: textNodePtr) {
+				newNode.addChild(textNode)
+			} else {
+				if let childCopy = child.recursiveCopy() {
+					newNode.addChild(childCopy)
+				} else {
+					return nil
+				}
+			}
+		}
+
+		return newNode
+	}
+
 	private func node(from ptr: xmlNodePtr?) -> XMLNode? {
 		guard let doc = doc, let nodePtr = ptr else {
 			return nil
