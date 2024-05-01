@@ -62,21 +62,27 @@ public final class XMLNode: Searchable {
 
 			let option: Libxml2XMLParserOptions = [.RECOVER, .NOERROR, .NOWARNING]
 			let cur = newValue.cString(using: .utf8)!
-			let ptr = cur.withUnsafeBytes {
-				let doc = xmlReadMemory($0.bindMemory(to: xmlChar.self).baseAddress!, Int32($0.count), nil, String.Encoding.utf8.IANACharSetName, Int32(option.rawValue))
-				return unsafeBitCast(doc, to: (UnsafeMutablePointer<xmlNode>?).self)
+
+			let fragment = cur.withUnsafeBytes {
+				let pointer = $0.bindMemory(to: xmlChar.self)
+				return xmlReadMemory(pointer.baseAddress, Int32(pointer.count), nil, nil, Int32(option.rawValue))
 			}
 
-			guard let ptr, let newChildren = node(from: ptr) else {
-				return
+			var newChildren: [xmlNodePtr] = []
+			var child = fragment?.pointee.children
+			while let childPtr = child {
+				newChildren.append(childPtr)
+				child = childPtr.pointee.next
 			}
 
 			for child in children {
 				removeChild(child)
 			}
 
-			for newChild in newChildren.children {
-				addChild(newChild)
+			for newChildPtr in newChildren {
+				if let node = node(from: newChildPtr) {
+					addChild(node)
+				}
 			}
 		}
 	}
